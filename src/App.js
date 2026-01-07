@@ -1,12 +1,15 @@
-import { BrowserRouter as Router,Routes, Route } from 'react-router-dom';
-import './App.css';
-import Home from './pages/home/Home';
-import Login from './pages/login/Login';
+import Navbar from './components/NavBar';
+import Footer from './components/Footer';
+import Login from './pages/Login';
+
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-      </header>
+    <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
+      <Navbar />
+      <main style={{ flex: 1 }}>
+        <Login />
+      </main>
+      <Footer />
     </div>
   );
 }
