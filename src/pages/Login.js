@@ -1,17 +1,41 @@
 import React, { useState } from 'react';
-import './Login.css'; // 작성한 CSS 파일을 불러옵니다.
+import './Login.css';
+import { login } from '../services/api';
+import SignUpModal from '../components/SignUpModal';
 
-function Login() {
+function Login({ onLogin }) {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [isSignUpOpen, setIsSignUpOpen] = useState(false);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    setError('');
+
     if (!username || !password) {
-      alert("아이디와 비밀번호를 모두 입력해주세요.");
+      setError("Please enter both username and password.");
       return;
     }
-    console.log("Login attempt:", { username, password });
+
+    setLoading(true);
+    try {
+      const response = await login(username, password);
+      alert(`Login successful! Welcome, ${response.user.username}!`);
+      // Handle after successful login (save token and user)
+      localStorage.setItem('token', response.token);
+      localStorage.setItem('user', JSON.stringify(response.user));
+      // Notify parent to update auth state
+      onLogin && onLogin();
+      // Reset form
+      setUsername('');
+      setPassword('');
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -19,12 +43,13 @@ function Login() {
       <div className="login-card">
         <h2>Login</h2>
         <form onSubmit={handleSubmit}>
-          <input 
+          <input
             className="login-input"
             type="text" 
             placeholder="Username" 
             value={username}
             onChange={(e) => setUsername(e.target.value)}
+            disabled={loading}
           />
           <input 
             className="login-input" 
@@ -32,13 +57,35 @@ function Login() {
             placeholder="Password" 
             value={password}
             onChange={(e) => setPassword(e.target.value)}
+            disabled={loading}
           />
-          <button type="submit" className="login-button">Login</button>
+          {error && <div className="error-message">{error}</div>}
+          <button 
+            type="submit" 
+            className="login-button"
+            disabled={loading}
+          >
+            {loading ? 'Logging in...' : 'Login'}
+          </button>
         </form>
-        <span className="forgot-link" onClick={() => alert('비밀번호 찾기 페이지로 이동')}>
+        <span className="forgot-link" onClick={() => alert('Navigate to password recovery page')}>
           Forgot Password?
         </span>
+        <button
+          className="signup-button"
+          onClick={() => setIsSignUpOpen(true)}
+          disabled={loading}
+        >
+          Sign Up
+        </button>
       </div>
+      <SignUpModal 
+        isOpen={isSignUpOpen}
+        onClose={() => setIsSignUpOpen(false)}
+        onSuccess={() => {
+          // Handle after successful registration
+        }}
+      />
     </div>
   );
 }
