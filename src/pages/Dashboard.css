@@ -13,46 +13,31 @@
   margin-bottom: 30px;
 }
 
-
-.post-form-section form {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  margin-bottom: 40px;
-  background: #f9f9f9;
-  padding: 20px;
-  border-radius: 8px;
-}
-
-.post-form-section input, .post-form-section textarea {
-  padding: 12px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-}
-
-.post-form-section textarea {
-  height: 100px;
-  resize: none;
-}
-
-/* 게시글 카드 스타일 */
-.post-card {
-  border: 1px solid #e0e0e0;
-  padding: 20px;
-  margin-bottom: 15px;
-  border-radius: 8px;
-  transition: transform 0.2s;
-}
-
-.post-card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-}
-
-.post-card h4 { margin: 0 0 10px 0; color: #1976d2; }
-.post-card p { margin: 0 0 10px 0; color: #444; }
-.post-card small { color: #888; }
-
 .logout-btn {
-  background: #d32f2f !important;
+  background-color: #d32f2f !important;
+  color: #ffffff;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 4px rgba(211, 47, 47, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.logout-btn:hover {
+  background-color: #b71c1c !important;
+  box-shadow: 0 4px 8px rgba(211, 47, 47, 0.3);
+  transform: translateY(-1px);
+}
+
+.logout-btn:active {
+  transform: translateY(0);
+  box-shadow: 0 1px 2px rgba(211, 47, 47, 0.2);
 }
