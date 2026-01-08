@@ -13,10 +13,11 @@
 
 .modal-content {
   background-color: white;
-  padding: 48px 40px;
-  width: 100%;
+  padding: 40px;
+  width: 90%;
   max-width: 400px;
   border: 1px solid #e0e0e0;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.1);
 }
 
 .modal-header {
@@ -56,7 +57,7 @@
 .modal-input {
   width: 100%;
   padding: 12px 0;
-  margin: 0 0 24px 0;
+  margin: 0 0 20px 0;
   border: none;
   border-bottom: 1px solid #e0e0e0;
   box-sizing: border-box;
@@ -64,6 +65,14 @@
   color: #212121;
   background: transparent;
   transition: border-color 0.2s ease;
+}
+
+.modal-input:-webkit-autofill,
+.modal-input:-webkit-autofill:hover,
+.modal-input:-webkit-autofill:focus{
+  -webkit-text-fill-color: #212121;
+  -webkit-box-shadow: 0 0 0px 1000px white inset;
+  transition: background-color 5000s ease-in-out 0s;
 }
 
 .modal-input:focus {
@@ -89,7 +98,7 @@
   cursor: pointer;
   font-size: 14px;
   font-weight: 500;
-  margin: 32px 0 0 0;
+  margin: 20px 0 0 0;
   text-transform: uppercase;
   letter-spacing: 0.5px;
   transition: background-color 0.2s ease;
@@ -106,7 +115,8 @@
 
 .error-message {
   color: #d32f2f;
-  font-size: 14px;
-  margin: -16px 0 16px 0;
+  font-size: 13px;
+  margin: -12px 0 12px 0;
   text-align: left;
+  min-height: 18px;
 }

@@ -8,7 +8,12 @@ function Dashboard({ onLogout }) {
     <div className="dashboard-container" style={{ padding: 20 }}>
       <h2>Welcome{user ? `, ${user.username}` : ''}!</h2>
       <p>This is your dashboard. Add your protected content here.</p>
-      <button onClick={() => onLogout && onLogout()}>Logout</button>
+      <button
+        className='logout-btn'
+        onClick={() => onLogout && onLogout()}
+        >
+          Logout
+          </button>
     </div>
   );
 }

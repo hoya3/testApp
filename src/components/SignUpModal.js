@@ -4,18 +4,30 @@ import './SignUpModal.css';
 
 function SignUpModal({ isOpen, onClose, onSuccess }) {
   const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+
+  const validationEmail = (email) => {
+    return String(email)
+      .toLowerCase()
+      .match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/);
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
 
     // Input validation
-    if (!username || !password || !confirmPassword) {
+    if (!username || !email || !password || !confirmPassword) {
       setError('Please fill in all fields.');
+      return;
+    }
+
+    if (!validationEmail(email)) {
+      setError('Please enter a valid email address.');
       return;
     }
 
@@ -26,10 +38,10 @@ function SignUpModal({ isOpen, onClose, onSuccess }) {
 
     setLoading(true);
     try {
-      await register(username, password);
-      alert('Registration successful! You can now log in.');
+      await register(username, email, password);
       // Reset form
       setUsername('');
+      setEmail('');
       setPassword('');
       setConfirmPassword('');
       onSuccess && onSuccess();
@@ -43,6 +55,7 @@ function SignUpModal({ isOpen, onClose, onSuccess }) {
 
   const handleClose = () => {
     setUsername('');
+    setEmail('');
     setPassword('');
     setConfirmPassword('');
     setError('');
@@ -65,6 +78,14 @@ function SignUpModal({ isOpen, onClose, onSuccess }) {
             placeholder="Username"
             value={username}
             onChange={(e) => setUsername(e.target.value)}
+            disabled={loading}
+          />
+          <input
+            className="modal-input"
+            type="email"
+            placeholder="Email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
             disabled={loading}
           />
           <input
