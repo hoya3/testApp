@@ -22,7 +22,6 @@ function Login({ onLogin }) {
     setLoading(true);
     try {
       const response = await login(username, password);
-      alert(`Login successful! Welcome, ${response.user.username}!`);
       // Handle after successful login (save token and user)
       localStorage.setItem('token', response.token);
       localStorage.setItem('user', JSON.stringify(response.user));
@@ -83,7 +82,6 @@ function Login({ onLogin }) {
         isOpen={isSignUpOpen}
         onClose={() => setIsSignUpOpen(false)}
         onSuccess={() => {
-          // Handle after successful registration
         }}
       />
     </div>

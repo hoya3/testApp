@@ -6,11 +6,12 @@ import os
 import secrets
 
 app = Flask(__name__)
+# react와의 통신 허용
 CORS(app)
 
-# Database file path
+# DB file path
 DB_PATH = os.path.join(os.path.dirname(__file__), 'users.db')
-
+# DB management
 def init_db():
     conn = sqlite3.connect(DB_PATH)
     cursor = conn.cursor()
@@ -18,6 +19,7 @@ def init_db():
         CREATE TABLE IF NOT EXISTS users (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             username TEXT UNIQUE NOT NULL,
+            email TEXT UNIQUE NOT NULL,
             password_hash TEXT NOT NULL,
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         )
@@ -30,25 +32,23 @@ def get_db_connection():
     conn.row_factory = sqlite3.Row
     return conn
 
+#[Route Definitions]
 @app.route('/api/health', methods=['GET'])
 def health():
     return jsonify({'status': 'ok'}), 200
 
-@app.route('/')
-def home():
-    return jsonify({'message': 'Flask Backend Server is Running!'}), 200
-
 @app.route('/api/register', methods=['POST'])
 def register():
-    """Register API"""
+    """User Register API"""
     data = request.get_json() or {}
     username = (data.get('username') or '').strip()
+    email = (data.get('email') or '').strip()
     password = data.get('password') or ''
 
     # Input validation
-    if not username or not password:
-        return jsonify({'error': 'Username and password are required.'}), 400
-    
+    if not all([username, email, password]):
+        return jsonify({'error': 'Username, email, and password are required.'}), 400
+
     if len(username) < 3:
         return jsonify({'error': 'Username must be at least 3 characters long.'}), 400
     
@@ -58,18 +58,18 @@ def register():
     conn = get_db_connection()
     cursor = conn.cursor()
     
-    # Check for duplicate username
-    cursor.execute('SELECT id FROM users WHERE username = ?', (username,))
+    # Check for duplicate username&email (아이디 중복 확인)
+    cursor.execute('SELECT id FROM users WHERE username = ? OR email = ?', (username, email))
     if cursor.fetchone():
         conn.close()
-        return jsonify({'error': 'Username already exists.'}), 400
-    
+        return jsonify({'error': 'Username or email already exists.'}), 400
+
     # Hash password and save
     password_hash = generate_password_hash(password)
     try:
         cursor.execute(
-            'INSERT INTO users (username, password_hash) VALUES (?, ?)',
-            (username, password_hash)
+            'INSERT INTO users (username, email, password_hash) VALUES (?, ?, ?)',
+            (username, email, password_hash)
         )
         conn.commit()
         conn.close()
@@ -101,7 +101,6 @@ def login():
     
     # Verify password
     if check_password_hash(user['password_hash'], password):
-        # Generate simple token (use JWT in production)
         token = secrets.token_urlsafe(32)
         return jsonify({
             'token': token,
@@ -115,6 +114,5 @@ def login():
         return jsonify({'error': 'Invalid username or password.'}), 401
 
 if __name__ == '__main__':
-    # Initialize database on app start
     init_db()
     app.run(host='0.0.0.0', port=5000, debug=True)
